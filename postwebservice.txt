@@ -1,0 +1,27 @@
+   
+    NSDictionary* inputData = [NSDictionary dictionaryWithObjectsAndKeys:
+                               @"824571245478942484122",@"deviceToken",
+                               @"I",@"deviceType",
+                               @"pankaj@arkenea.com",@"email_id",
+                               @"Y",@"notification_flag",
+                               @"12345678",@"password",
+                               @"login",@"service",
+                               nil];
+      NSString *data = [NSString stringWithFormat:@"data=%@",inputData];
+     NSDictionary *jsonDict = [NSDictionary dictionaryWithObject:inputData forKey:@"data"];
+    
+    NSError *error = nil;
+    NSData *jsonInputData = [NSJSONSerialization dataWithJSONObject:jsonDict options:NSJSONWritingPrettyPrinted error:&error];
+    NSString *jsonInputString = [[NSString alloc] initWithData:jsonInputData encoding:NSUTF8StringEncoding];
+    NSURL *url = [NSURL URLWithString:@"http://frendz.co/API/Login"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+     [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    [request setHTTPBody:[jsonInputString dataUsingEncoding:NSUTF8StringEncoding]];
+    NSURLResponse *response;
+    NSError *err;
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&err];
+    id jsonResponseData = [NSJSONSerialization JSONObjectWithData:responseData options:kNilOptions error:nil];
+    NSLog(@"%@",[[jsonResponseData objectForKey:@"data"] objectForKey:@"user_id"]);
+    access_token = [[jsonResponseData objectForKey:@"data"] objectForKey:@"access_token"];
+    user_id = [[jsonResponseData objectForKey:@"data"] objectForKey:@"user_id"];
